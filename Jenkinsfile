@@ -5,13 +5,13 @@ pipeline {
             timeout(time: 1, unit: 'HOURS')
         }
         triggers {
-            pollSCM('* * * * *')
+            pollSCM('50 13 * * 1-5')
         }
         stages {
             stage('git') {
                 steps {
                     git url: 'https://github.com/siddhaantkadu/spring-petclinic.git',
-                        branch: 'dev'
+                        branch: 'release'
                 }
             }
             stage('build') {

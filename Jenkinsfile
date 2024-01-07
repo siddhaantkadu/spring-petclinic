@@ -14,17 +14,21 @@ pipeline {
                         branch: 'release'
                 }
             }
-            stage('build') {
+            stage('Build and Test') {
                 steps {
                     sh 'mvn clean package'
-                    withSonarQubeEnv(installationName: 'SONAR_QUBE', credentialsId: 'SONAR_TOKEN') {
-                        sh 'mvn clean verify sonar:sonar -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=jenkins-spring-petclinic -Dsonar.projectKey=jenkins-spring-petclinic_spring-petclinic'
                     }
-                }
                 post {
                     success {
                         archiveArtifacts artifacts: '**/spring-petclinic-*.jar'
                         junit testResults: '**/TEST-*.xml'
+                    }
+                }
+            }
+            stage('Static Code Analysis') {
+                steps {
+                    withSonarQubeEnv(installationName: 'SONAR_QUBE', credentialsId: 'SONAR_TOKEN') {
+                        sh 'mvn clean verify sonar:sonar -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=jenkins-spring-petclinic -Dsonar.projectKey=jenkins-spring-petclinic_spring-petclinic'
                     }
                 }
             }

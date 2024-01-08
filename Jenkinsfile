@@ -23,6 +23,8 @@ pipeline {
             post {
                 success {
                     junit testResults: '**/TEST-*.xml'
+                    slackSend "Unit Test - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)" 
+                    
                 }
                 failure { 
                     mail subject: 'Unit Test has been faild',
@@ -40,6 +42,7 @@ pipeline {
             post {
                 success {
                     archiveArtifacts artifacts: '**/spring-petclinic-*.jar'
+
                 }
                 failure { 
                     mail subject: 'Build has been faild',

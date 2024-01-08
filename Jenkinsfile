@@ -70,12 +70,5 @@ pipeline {
                 }
             }
         }
-    }
-    post {
-        success {
-            slackSend channel: "#dcl-jenkins-jobs-notification",
-                      message: "Unit Test - ${JOB_NAME} ${BUILD_NUMBER} (<${BUILD_URL}|Open>)",
-                      color: 'good'
-        }     
     }           
 }

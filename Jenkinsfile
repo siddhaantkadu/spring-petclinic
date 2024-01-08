@@ -22,7 +22,7 @@ pipeline {
             }
             post {
                 success {
-                    junit testResults: '**/TEST-*.xml'
+                    junit testResults: '**/TEST-*.xml',
                     slackSend "Unit Test - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)" 
                     
                 }

@@ -17,7 +17,7 @@ pipeline {
         }
         stage('Unit Test') {
             steps {
-                sh 'mvn clean test'
+                sh 'mvn test'
             }
             post {
                 success {
@@ -37,15 +37,13 @@ pipeline {
         }
         stage('Static Code Analysis') {
             steps {
-                script {
-                    withSonarQubeEnv(installationName: 'SONAR_QUBE', credentialsId: 'SONAR_TOKEN') {
-                        sh  """
-                            mvn clean verify sonar:sonar 
-                            -Dsonar.host.url=https://sonarcloud.io \
-                            -Dsonar.organization=jenkins-spring-petclinic \
-                            -Dsonar.projectKey=jenkins-spring-petclinic_spring-petclinic
-                            """
-                   }
+                withSonarQubeEnv(installationName: 'SONAR_QUBE', credentialsId: 'SONAR_TOKEN') {
+                    sh  """
+                        mvn clean verify sonar:sonar \
+                        -Dsonar.host.url=https://sonarcloud.io \
+                        -Dsonar.organization=jenkins-spring-petclinic \
+                        -Dsonar.projectKey=jenkins-spring-petclinic_spring-petclinic
+                        """
                 }
             }
         }

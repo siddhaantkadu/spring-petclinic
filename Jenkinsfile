@@ -26,8 +26,8 @@ pipeline {
                 }
                 failure { 
                     mail subject: 'Unit Test has been faild',
-                         from: 'siddhant.kadu@dcl.com'
-                         to: 'dcl.developer@dcl.com'
+                         from: 'siddhant.kadu@dcl.com',
+                         to: 'dcl.developer@dcl.com',
                          body: "Refer to $BUILD_URL for more details"
                 }
             }
@@ -43,8 +43,8 @@ pipeline {
                 }
                 failure { 
                     mail subject: 'Build has been faild',
-                         from: 'siddhant.kadu@dcl.com'
-                         to: 'dcl.developer@dcl.com'
+                         from: 'siddhant.kadu@dcl.com',
+                         to: 'dcl.developer@dcl.com',
                          body: "Refer to $BUILD_URL for more details"               
                 }
             }

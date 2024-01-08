@@ -9,10 +9,20 @@ pipeline {
         pollSCM('0 14 * * 1-5')
     }
     stages {
-        stage('Git Checkout') {
+        stage('Checkout SCM') {
             steps {
                 git url: 'https://github.com/siddhaantkadu/spring-petclinic.git',
                     branch: 'development'
+            }
+        }
+        stage('Unit Test') {
+            steps {
+                sh 'mvn clean test'
+            }
+            post {
+                success {
+                    junit testResults: '**/TEST-*.xml'
+                }
             }
         }
         stage('Build and Test') {
@@ -22,14 +32,16 @@ pipeline {
             post {
                 success {
                     archiveArtifacts artifacts: '**/spring-petclinic-*.jar'
-                    junit testResults: '**/TEST-*.xml'
                 }
             }
         }
         stage('Static Code Analysis') {
             steps {
                 withSonarQubeEnv(installationName: 'SONAR_QUBE', credentialsId: 'SONAR_TOKEN') {
-                    sh 'mvn clean verify sonar:sonar -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=jenkins-spring-petclinic -Dsonar.projectKey=jenkins-spring-petclinic_spring-petclinic'
+                    sh 'mvn clean verify sonar:sonar 
+                        -Dsonar.host.url=https://sonarcloud.io \
+                        -Dsonar.organization=jenkins-spring-petclinic \
+                        -Dsonar.projectKey=jenkins-spring-petclinic_spring-petclinic'
                 }
             }
         }

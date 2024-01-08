@@ -25,7 +25,8 @@ pipeline {
                     junit testResults: '**/TEST-*.xml'
                 }
                 failure { 
-                    slackSend "Unit Test - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
+                    slackSend channel: "#dcl-jenkins-jobs-notification",
+                              message: "Unit Test - ${JOB_NAME} ${BUILD_NUMBER} (<${BUILD_URL}|Open>)"
                     mail subject: 'Unit Test has been faild',
                          from: 'siddhant.kadu@dcl.com',
                          to: 'dcl.developer@dcl.com',

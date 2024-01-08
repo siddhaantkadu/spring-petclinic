@@ -26,7 +26,8 @@ pipeline {
                 }
                 failure { 
                     slackSend channel: "#dcl-jenkins-jobs-notification",
-                              message: "Unit Test - ${JOB_NAME} ${BUILD_NUMBER} (<${BUILD_URL}|Open>)"
+                              message: "Unit Test - ${JOB_NAME} ${BUILD_NUMBER} (<${BUILD_URL}|Open>)",
+                              
                     mail subject: 'Unit Test has been faild',
                          from: 'siddhant.kadu@dcl.com',
                          to: 'dcl.developer@dcl.com',
@@ -45,6 +46,9 @@ pipeline {
 
                 }
                 failure { 
+                    slackSend channel: "#dcl-jenkins-jobs-notification",
+                              message: "Unit Test - ${JOB_NAME} ${BUILD_NUMBER} (<${BUILD_URL}|Open>)",
+                              color: 'danger'
                     mail subject: 'Build has been faild',
                          from: 'siddhant.kadu@dcl.com',
                          to: 'dcl.developer@dcl.com',
@@ -67,14 +71,10 @@ pipeline {
         }
     }
     post {
-        failure { 
+        success {
             slackSend channel: "#dcl-jenkins-jobs-notification",
-                        message: "Build Failed - ${JOB_NAME} ${BUILD_NUMBER} (<${BUILD_URL}|Open>)"
-
-            mail subject: "${BUILD_NUMBER} Build Failed",
-                    from: 'siddhant.kadu@dcl.com',
-                    to: 'dcl.developer@dcl.com',
-                    body: "Refer to $BUILD_URL for more details"
-        }
-    }
+                      message: "Unit Test - ${JOB_NAME} ${BUILD_NUMBER} (<${BUILD_URL}|Open>)",
+                      color: 'good'
+        }     
+    }           
 }

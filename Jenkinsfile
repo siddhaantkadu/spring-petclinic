@@ -25,7 +25,7 @@ pipeline {
                 }
             }
         }
-        stage('Build and Test') {
+        stage('Build Package') {
             steps {
                 sh 'mvn clean package'
                 }
@@ -37,13 +37,15 @@ pipeline {
         }
         stage('Static Code Analysis') {
             steps {
-                withSonarQubeEnv(installationName: 'SONAR_QUBE', credentialsId: 'SONAR_TOKEN') {
-                    sh  """
-                        mvn clean verify sonar:sonar 
-                        -Dsonar.host.url=https://sonarcloud.io \
-                        -Dsonar.organization=jenkins-spring-petclinic \
-                        -Dsonar.projectKey=jenkins-spring-petclinic_spring-petclinic
-                        """
+                script {
+                    withSonarQubeEnv(installationName: 'SONAR_QUBE', credentialsId: 'SONAR_TOKEN') {
+                        sh  """
+                            mvn clean verify sonar:sonar 
+                            -Dsonar.host.url=https://sonarcloud.io \
+                            -Dsonar.organization=jenkins-spring-petclinic \
+                            -Dsonar.projectKey=jenkins-spring-petclinic_spring-petclinic
+                            """
+                   }
                 }
             }
         }

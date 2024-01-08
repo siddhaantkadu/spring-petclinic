@@ -6,7 +6,7 @@ pipeline {
         buildDiscarder(logRotator(numToKeepStr: '10'))
     }
     triggers {
-        pollSCM('0 14 * * 1-5')
+        pollSCM('* * * * *')
     }
     stages {
         stage('Checkout SCM') {
@@ -15,6 +15,7 @@ pipeline {
                     branch: 'development'
             }
         }
+
         stage('Unit Test') {
             steps {
                 sh 'mvn test'
@@ -23,8 +24,15 @@ pipeline {
                 success {
                     junit testResults: '**/TEST-*.xml'
                 }
+                failure { 
+                    mail subject: 'Unit Test has been faild',
+                         from: 'siddhant.kadu@dcl.com'
+                         to: 'dcl.developer@dcl.com'
+                         body: "Refer to $BUILD_URL for more details"
+                }
             }
         }
+
         stage('Build Package') {
             steps {
                 sh 'mvn clean package'
@@ -33,8 +41,15 @@ pipeline {
                 success {
                     archiveArtifacts artifacts: '**/spring-petclinic-*.jar'
                 }
+                failure { 
+                    mail subject: 'Build has been faild',
+                         from: 'siddhant.kadu@dcl.com'
+                         to: 'dcl.developer@dcl.com'
+                         body: "Refer to $BUILD_URL for more details"               
+                }
             }
         }
+
         stage('Static Code Analysis') {
             steps {
                 withSonarQubeEnv(installationName: 'SONAR_QUBE', credentialsId: 'SONAR_TOKEN') {

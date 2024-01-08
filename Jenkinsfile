@@ -22,11 +22,10 @@ pipeline {
             }
             post {
                 success {
-                    junit testResults: '**/TEST-*.xml',
-                    slackSend "Unit Test - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)" 
-                    
+                    junit testResults: '**/TEST-*.xml'
                 }
                 failure { 
+                    slackSend "Unit Test - ${env.JOB_NAME} ${env.BUILD_NUMBER} (<${env.BUILD_URL}|Open>)"
                     mail subject: 'Unit Test has been faild',
                          from: 'siddhant.kadu@dcl.com',
                          to: 'dcl.developer@dcl.com',

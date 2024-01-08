@@ -66,4 +66,15 @@ pipeline {
             }
         }
     }
+    post {
+        failure { 
+            slackSend channel: "#dcl-jenkins-jobs-notification",
+                        message: "Build Failed - ${JOB_NAME} ${BUILD_NUMBER} (<${BUILD_URL}|Open>)"
+
+            mail subject: "${BUILD_NUMBER} Build Failed",
+                    from: 'siddhant.kadu@dcl.com',
+                    to: 'dcl.developer@dcl.com',
+                    body: "Refer to $BUILD_URL for more details"
+        }
+    }
 }

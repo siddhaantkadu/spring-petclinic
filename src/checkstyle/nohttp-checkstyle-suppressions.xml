@@ -6,6 +6,6 @@
 	<suppress files="node_modules/.*" checks=".*"/>
 	<suppress files="node/.*" checks=".*"/>
 	<suppress files="build/.*" checks=".*"/>
-	<suppress files="[\\/]build.log" checks="NoHttp"/>
-	<suppress files=".+\.(jar|git|ico|p12|gif|jks|jpg|svg)" checks="NoHttp"/>
+	<suppress files="[\\/]build.log" checks="Http"/>
+	<suppress files=".+\.(jar|git|ico|p12|gif|jks|jpg|svg)" checks="Http"/>
 </suppressions>

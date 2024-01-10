@@ -9,11 +9,13 @@ pipeline {
         pollSCM('* * * * *')
     }
     stages {
+
         stage('clean workspace') {
             steps{
                 cleanWs()
             }
-                    
+        }
+
         stage('Checkout SCM') {
             steps {
                 git url: 'https://github.com/siddhaantkadu/spring-petclinic.git',

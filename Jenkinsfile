@@ -58,6 +58,19 @@ pipeline {
             }
         }
 
+        stage('Static Code Analysis') {
+            steps {
+                withSonarQubeEnv(installationName: 'SONAR_QUBE', credentialsId: 'SONAR_TOKEN') {
+                    sh  """
+                        mvn clean verify sonar:sonar \
+                        -Dsonar.host.url=https://sonarcloud.io \
+                        -Dsonar.organization=jenkins-spring-petclinic \
+                        -Dsonar.projectKey=jenkins-spring-petclinic_spring-petclinic
+                        """
+                }
+            }
+        }
+
         stage('Push Artifact') {
             steps { 
                 rtUpload (
@@ -75,18 +88,10 @@ pipeline {
                     buildNumber: "${BUILD_NUMBER}",
                 )
             }
-        }
-
-        stage('Static Code Analysis') {
-            steps {
-                withSonarQubeEnv(installationName: 'SONAR_QUBE', credentialsId: 'SONAR_TOKEN') {
-                    sh  """
-                        mvn clean verify sonar:sonar \
-                        -Dsonar.host.url=https://sonarcloud.io \
-                        -Dsonar.organization=jenkins-spring-petclinic \
-                        -Dsonar.projectKey=jenkins-spring-petclinic_spring-petclinic
-                        """
-                }
+            success { 
+                    slackSend channel: "#dcl-jenkins-jobs-notification",
+                              message: "Sucessfully Published the artifact",
+                              color: 'good'
             }
         }
     }           

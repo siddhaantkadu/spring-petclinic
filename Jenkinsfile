@@ -3,7 +3,7 @@ pipeline {
     options {
         timestamps()
         timeout(time: 1, unit: 'HOURS')
-        buildDiscarder(logRotator(numToKeepStr: '10'))
+        buildDiscarder(logRotator(numToKeepStr: '5'))
     }
     triggers {
         pollSCM('* * * * *')
@@ -113,11 +113,6 @@ pipeline {
                                                     --prettyPrint    
                                                     '''
                 dependencyCheckPublisher pattern: 'dependency-check-report.xml'
-            }
-        }
-        stage('Print Eenvironment Variable') {
-            steps { 
-                sh 'printenv'
             }
         }
     }           

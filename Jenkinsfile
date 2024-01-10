@@ -88,10 +88,12 @@ pipeline {
                     buildNumber: "${BUILD_NUMBER}",
                 )
             }
-            success { 
+            post {
+                success { 
                     slackSend channel: "#dcl-jenkins-jobs-notification",
                               message: "Sucessfully Published the artifact",
                               color: 'good'
+                }                
             }
         }
     }           

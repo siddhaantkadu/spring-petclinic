@@ -91,7 +91,7 @@ pipeline {
             post {
                 success { 
                     slackSend channel: "#dcl-jenkins-jobs-notification",
-                              message: "Sucessfully Published the artifact",
+                              message: "Sucessfully Published the artifact: ${JOB_NAME} ${BUILD_NUMBER} (<${BUILD_URL}|Open>)",
                               color: 'good'
                 }                
             }

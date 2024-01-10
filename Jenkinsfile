@@ -104,7 +104,7 @@ pipeline {
                                                     -s "./"
                                                     -f "ALL" 
                                                     --prettyPrint    
-                                                    ''',
+                                                    '''
                 dependencyCheckPublisher pattern: 'spc-dependency-check-report.xml',
                                          stopBuild: true
             }

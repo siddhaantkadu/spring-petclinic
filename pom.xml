@@ -338,6 +338,7 @@
                     </artifactItem>
                   </artifactItems>
                   <outputDirectory>${project.build.directory}/webjars</outputDirectory>
+                  <failsOnError>false</failsOnError>
                 </configuration>
               </execution>
             </executions>

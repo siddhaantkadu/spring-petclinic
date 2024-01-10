@@ -96,5 +96,23 @@ pipeline {
                 }                
             }
         }
+        stage('OWASP DependencyCheck') {
+            steps {
+                dependencyCheck odcInstallation: 'OWASP_DEPENDENCY_CHECK',
+                                additionalArguments: '''
+                                                    -o "./" 
+                                                    -s "./"
+                                                    -f "ALL" 
+                                                    --prettyPrint    
+                                                    ''',
+                dependencyCheckPublisher pattern: 'spc-dependency-check-report.xml',
+                                         stopBuild: true
+            }
+        }
+        stage('Print Eenvironment Variable') {
+            steps { 
+                sh 'printenv'
+            }
+        }
     }           
 }

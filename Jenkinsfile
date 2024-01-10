@@ -58,6 +58,25 @@ pipeline {
             }
         }
 
+        stage('Push Artifact') {
+            steps { 
+                rtUpload (
+                    serverId: 'jfrog_artifactory',
+                    spec: '''{
+                        "files": [
+                            {
+                            "pattern": "**/spring-petclinic*.jar",
+                            "target": "libs-snapshot-local/"
+                            }
+                        ]
+                    }''',
+                    
+                    buildName: "${JOB_NAME}-${BUILD_NUMBER}",
+                    buildNumber: "${BUILD_NUMBER}",
+                )
+            }
+        }
+
         stage('Static Code Analysis') {
             steps {
                 withSonarQubeEnv(installationName: 'SONAR_QUBE', credentialsId: 'SONAR_TOKEN') {

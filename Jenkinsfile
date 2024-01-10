@@ -105,8 +105,7 @@ pipeline {
                                                     -f "ALL" 
                                                     --prettyPrint    
                                                     '''
-                dependencyCheckPublisher pattern: 'dependency-check-report.xml',
-                                         stopBuild: false 
+                dependencyCheckPublisher pattern: 'dependency-check-report.xml'
             }
         }
         stage('Print Eenvironment Variable') {

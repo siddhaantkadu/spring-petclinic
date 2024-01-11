@@ -20,7 +20,7 @@ pipeline {
         stage('Checkout SCM') {
             steps {
                 git url: 'https://github.com/siddhaantkadu/spring-petclinic.git',
-                    branch: 'development'
+                    branch: 'dev'
             }
         }
 

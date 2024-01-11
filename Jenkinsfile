@@ -1,6 +1,7 @@
 pipeline {
     agent { label 'MAVEN' }
     options {
+        skipDefaultCheckout()
         timestamps()
         timeout(time: 1, unit: 'HOURS')
         buildDiscarder(logRotator(numToKeepStr: '5'))
@@ -28,7 +29,7 @@ pipeline {
                 sh 'mvn test'
             }
             post {
-                success {
+                always {
                     junit testResults: '**/TEST-*.xml'
                 }
                 failure { 
@@ -36,10 +37,12 @@ pipeline {
                               message: "Unit Test - ${JOB_NAME} ${BUILD_NUMBER} (<${BUILD_URL}|Open>)",
                               color: 'danger'
                               
-                    mail subject: 'Unit Test has been faild',
-                         from: 'siddhant.kadu@dcl.com',
-                         to: 'dcl.developer@dcl.com',
-                         body: "Refer to $BUILD_URL for more details"
+                    emailext attachLog: true,
+                        subject: "'${currentBuild.result}'",
+                        body: "Build Faild Project: ${env.JOB_NAME}<br/>" +
+                            "Build Number: ${env.BUILD_NUMBER}<br/>" +
+                            "URL: ${env.BUILD_URL}<br/>",
+                        to: 'devops.cloud.dcl@gmail.com'
                 }
             }
         }
@@ -57,10 +60,12 @@ pipeline {
                     slackSend channel: "#dcl-jenkins-jobs-notification",
                               message: "Unit Test - ${JOB_NAME} ${BUILD_NUMBER} (<${BUILD_URL}|Open>)",
                               color: 'danger'
-                    mail subject: 'Build has been faild',
-                         from: 'siddhant.kadu@dcl.com',
-                         to: 'dcl.developer@dcl.com',
-                         body: "Refer to $BUILD_URL for more details"               
+                    emailext attachLog: true,
+                        subject: "'${currentBuild.result}'",
+                        body: "Build Faild Project: ${env.JOB_NAME}<br/>" +
+                            "Build Number: ${env.BUILD_NUMBER}<br/>" +
+                            "URL: ${env.BUILD_URL}<br/>",
+                        to: 'devops.cloud.dcl@gmail.com'               
                 }
             }
         }
@@ -115,5 +120,16 @@ pipeline {
                 dependencyCheckPublisher pattern: 'dependency-check-report.xml'
             }
         }
-    }           
+    }
+
+    post {
+     always {
+        emailext attachLog: true,
+            subject: "'${currentBuild.result}'",
+            body: "Project: ${env.JOB_NAME}<br/>" +
+                "Build Number: ${env.BUILD_NUMBER}<br/>" +
+                "URL: ${env.BUILD_URL}<br/>",
+            to: 'devops.cloud.dcl@gmail.com'
+        }
+    }          
 }

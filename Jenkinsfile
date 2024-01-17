@@ -119,7 +119,7 @@ pipeline {
             steps {
                 sh """
                     docker image push siddhaant/springpetclinic:dev-${BUILD_NUMBER}
-                    docker image rm -f $(docker image ls -q)
+                    docker image rm -f siddhaant/springpetclinic:dev-${BUILD_NUMBER}
                    """
             }
         }

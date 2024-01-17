@@ -98,11 +98,29 @@ pipeline {
                 dependencyCheckPublisher pattern: 'dependency-check-report.xml'
             }
         }
-        stage("Docker Image Build and Push to DockerHub") { 
+        stage('Docker Image Build') { 
             agent { label 'DOCKER'}
             steps {
                 unstash name: 'SpringPetClinic'
                 sh "docker image build -t siddhaant/springpetclinic:dev-${BUILD_NUMBER} ."
+            }
+        }
+        stage('Trivy: Scan DockerImage') {
+            agent { label 'DOCKER'}
+            steps { 
+                script {
+                    sh "trivy image --format json -o trivy-report.json siddhaant/springpetclinic:dev-${BUILD_NUMBER}"
+                }
+                publishHTML([reportName: 'Trivy Vulnerability Report', reportDir: '.', reportFiles: 'trivy-report.json', keepAll: true, alwaysLinkToLastBuild: true, allowMissing: false])
+            }
+        }
+        stage('Publish Docker Image') {
+            agent { label 'DOCKER'}
+            steps {
+                    sh """
+                        docker image push siddhaant/springpetclinic:dev-${BUILD_NUMBER}
+                        docker image rm `docker image ls -q`
+                       """
             }
         }
     }
@@ -115,7 +133,7 @@ pipeline {
             body: "Project: ${env.JOB_NAME}<br/>" +
                 "Build Number: ${env.BUILD_NUMBER}<br/>" +
                 "URL: ${env.BUILD_URL}<br/>",
-            to: 'devops.cloud.dcl@gmail.com'
+            to: 'devops.cloud.dcl@gmail.com',
         }
      failure { 
         slackSend channel: "#dcl-jenkins-jobs-notification",
@@ -127,7 +145,7 @@ pipeline {
             body: "Project: ${env.JOB_NAME}<br/>" +
                 "Build Number: ${env.BUILD_NUMBER}<br/>" +
                 "URL: ${env.BUILD_URL}<br/>",
-            to: 'devops.cloud.dcl@gmail.com'               
+            to: 'devops.cloud.dcl@gmail.com'                 
         }
     }          
 }

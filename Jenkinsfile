@@ -109,9 +109,9 @@ pipeline {
             agent { label 'DOCKER'}
             steps { 
                 script {
-                    sh "trivy image --format json -o trivy-report.json siddhaant/springpetclinic:dev-${BUILD_NUMBER}"
+                    sh "trivy image --format table -o trivy-report.txt siddhaant/springpetclinic:dev-${BUILD_NUMBER}"
                 }
-                publishHTML([reportName: 'Trivy Vulnerability Report', reportDir: '.', reportFiles: 'trivy-report.json', keepAll: true, alwaysLinkToLastBuild: true, allowMissing: false])
+                publishHTML([reportName: 'Trivy Vulnerability Report', reportDir: '.', reportFiles: 'trivy-report.txt', keepAll: true, alwaysLinkToLastBuild: true, allowMissing: false])
             }
         }
         stage('Publish Docker Image') {
@@ -134,7 +134,7 @@ pipeline {
                     "Build Number: ${env.BUILD_NUMBER}<br/>" +
                     "URL: ${env.BUILD_URL}<br/>",
                 to: 'devops.cloud.dcl@gmail.com',
-                attachmentsPattern: 'trivy-report.json'
+                attachmentsPattern: 'trivy-report.txt'
         }
         failure { 
             slackSend channel: "#dcl-jenkins-jobs-notification",

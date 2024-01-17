@@ -117,8 +117,10 @@ pipeline {
         stage('Publish Docker Image') {
             agent { label 'DOCKER'}
             steps {
-
-                    sh "docker image push siddhaant/springpetclinic:dev-${BUILD_NUMBER}"
+                sh """
+                    docker image push siddhaant/springpetclinic:dev-${BUILD_NUMBER}
+                    docker image rm -f $(docker image ls -q)
+                   """
             }
         }
     }

@@ -1,7 +1,7 @@
 pipeline {
     agent { label 'MAVEN' }
     options {
-        skipDefaultCheckout()
+        // skipDefaultCheckout()
         timestamps()
         timeout(time: 1, unit: 'HOURS')
         buildDiscarder(logRotator(numToKeepStr: '5'))
@@ -79,7 +79,7 @@ pipeline {
                 )
             }
             post {
-                success { 
+                failure { 
                     slackSend channel: "#dcl-jenkins-jobs-notification",
                               message: "Sucessfully Published the artifact: ${JOB_NAME} ${BUILD_NUMBER} (<${BUILD_URL}|Open>)",
                               color: 'good'

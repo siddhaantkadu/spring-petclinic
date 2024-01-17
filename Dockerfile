@@ -17,7 +17,7 @@ RUN addgroup -g ${UID} ${USER} && \
 USER ${USER}
 WORKDIR /${USER_HOME}
 
-ADD --chown=${USER}:${GROUP} **/spring-petclinic-*.jar /${USER_HOME}/spring-petclinic-3.2.0.jar
+COPY --chown=${USER}:${GROUP} **/spring-petclinic-*.jar /${USER_HOME}/spring-petclinic-3.2.0.jar
 
 ENTRYPOINT [ "java", "-jar" ]
 CMD [ "spring-petclinic-3.2.0.jar" ]

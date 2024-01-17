@@ -102,7 +102,7 @@ pipeline {
             agent { label 'DOCKER'}
             steps {
                 unstash name: 'SpringPetClinic'
-                sh "docker image build -t siddhaant/SpringPetClinic:dev-${BUILD_NUMBER}"
+                sh "docker image build -t siddhaant/SpringPetClinic:dev-${BUILD_NUMBER} ."
             }
         }
     }

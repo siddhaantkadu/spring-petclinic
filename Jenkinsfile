@@ -38,7 +38,8 @@ pipeline {
         stage('Build Package') {
             steps {
                 sh 'mvn clean package'
-                stash name: '**/spring-petclinic-*.jar'
+                stash name: 'SpringPetClinic',
+                      includes: '**/spring-petclinic-*.jar'
                 }
             post {
                 success {
@@ -98,9 +99,9 @@ pipeline {
             }
         }
         stage("Docker Image Build and Push to DockerHub") { 
-            agent { label: 'DOCKER'}
+            agent { label 'DOCKER'}
             steps {
-                unstash name: '**/spring-petclinic-*.jar'
+                unstash name: 'SpringPetClinic'
             }
         }
     }

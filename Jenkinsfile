@@ -134,7 +134,7 @@ pipeline {
                 "Build Number: ${env.BUILD_NUMBER}<br/>" +
                 "URL: ${env.BUILD_URL}<br/>",
             to: 'devops.cloud.dcl@gmail.com',
-        }
+        } 
      failure { 
         slackSend channel: "#dcl-jenkins-jobs-notification",
                     message: "${currentBuild.result} - ${JOB_NAME} ${BUILD_NUMBER} (<${BUILD_URL}|Open>)",

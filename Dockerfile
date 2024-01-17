@@ -17,4 +17,4 @@ RUN addgroup -g ${UID} ${USER} && \
 USER ${USER}
 WORKDIR /${USER_HOME}
 
-ADD 
+ADD --chown=${USER}:${GROUP} **/Spring*.jar /${USER_HOME}/spring-petclinic-3.2.0.jar

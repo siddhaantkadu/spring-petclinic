@@ -117,33 +117,34 @@ pipeline {
         stage('Publish Docker Image') {
             agent { label 'DOCKER'}
             steps {
-                    sh """
-                        docker image push siddhaant/springpetclinic:dev-${BUILD_NUMBER}
-                        docker image rm `docker image ls -q`
-                       """
+
+                    sh "docker image push siddhaant/springpetclinic:dev-${BUILD_NUMBER}"
             }
         }
     }
 
     post {
-     always {
-        emailext attachLog: true,            
-            subject: "${currentBuild.result}",
-            body: "Project: ${env.JOB_NAME}<br/>" +
-                "Build Number: ${env.BUILD_NUMBER}<br/>" +
-                "URL: ${env.BUILD_URL}<br/>",
-            to: 'devops.cloud.dcl@gmail.com',
-        } 
-     failure { 
-        slackSend channel: "#dcl-jenkins-jobs-notification",
-                    message: "${currentBuild.result} - ${JOB_NAME} ${BUILD_NUMBER} (<${BUILD_URL}|Open>)",
-                    color: 'danger'
-        emailext attachLog: true,
-            subject: "'${currentBuild.result}'",
-            body: "Project: ${env.JOB_NAME}<br/>" +
-                "Build Number: ${env.BUILD_NUMBER}<br/>" +
-                "URL: ${env.BUILD_URL}<br/>",
-            to: 'devops.cloud.dcl@gmail.com'                 
+        always {
+            emailext attachLog: true,
+                from: 'devops.cloud.dcl@gmail.com',            
+                subject: "${currentBuild.result}",
+                body: "Project: ${env.JOB_NAME}<br/>" +
+                    "Build Number: ${env.BUILD_NUMBER}<br/>" +
+                    "URL: ${env.BUILD_URL}<br/>",
+                to: 'devops.cloud.dcl@gmail.com',
+                attachmentsPattern: 'trivy-report.json'
+        }
+        failure { 
+            slackSend channel: "#dcl-jenkins-jobs-notification",
+                        message: "${currentBuild.result} - ${JOB_NAME} ${BUILD_NUMBER} (<${BUILD_URL}|Open>)",
+                        color: 'danger'
+            emailext attachLog: true,
+                from: 'devops.cloud.dcl@gmail.com',
+                subject: "'${currentBuild.result}'",
+                body: "Project: ${env.JOB_NAME}<br/>" +
+                    "Build Number: ${env.BUILD_NUMBER}<br/>" +
+                    "URL: ${env.BUILD_URL}<br/>",
+                to: 'devops.cloud.dcl@gmail.com'                 
         }
     }          
 }

@@ -110,6 +110,7 @@ pipeline {
     post {
      always {
         emailext attachLog: true,
+            from: 'devops.cloud.dcl@gmail.com',            
             subject: "${currentBuild.result}",
             body: "Project: ${env.JOB_NAME}<br/>" +
                 "Build Number: ${env.BUILD_NUMBER}<br/>" +
@@ -121,6 +122,7 @@ pipeline {
                     message: "${currentBuild.result} - ${JOB_NAME} ${BUILD_NUMBER} (<${BUILD_URL}|Open>)",
                     color: 'danger'
         emailext attachLog: true,
+            from: 'devops.cloud.dcl@gmail.com',
             subject: "'${currentBuild.result}'",
             body: "Project: ${env.JOB_NAME}<br/>" +
                 "Build Number: ${env.BUILD_NUMBER}<br/>" +

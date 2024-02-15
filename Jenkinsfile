@@ -7,7 +7,7 @@ pipeline {
         buildDiscarder(logRotator(numToKeepStr: '5'))
     }
     triggers {
-        pollSCM('* * * * *')
+       pollSCM('* * * * *') 
     }
     stages {
 
@@ -44,7 +44,6 @@ pipeline {
             post {
                 success {
                     archiveArtifacts artifacts: '**/spring-petclinic-*.jar'
-
                 }
             }
         }
@@ -59,31 +58,6 @@ pipeline {
                         -Dsonar.projectKey=jenkins-spring-petclinic_spring-petclinic
                         """
                 }
-            }
-        }
-
-        stage('Push Artifact') {
-            steps { 
-                rtUpload (
-                    serverId: 'jfrog_artifactory',
-                    spec: '''{
-                        "files": [
-                            {
-                            "pattern": "**/spring-petclinic*.jar",
-                            "target": "libs-snapshot-local/"
-                            }
-                        ]
-                    }''',
-                    buildName: "${JOB_NAME}-${BUILD_NUMBER}",
-                    buildNumber: "${BUILD_NUMBER}",
-                )
-            }
-            post {
-                failure { 
-                    slackSend channel: "#dcl-jenkins-jobs-notification",
-                              message: "Sucessfully Published the artifact: ${JOB_NAME} ${BUILD_NUMBER} (<${BUILD_URL}|Open>)",
-                              color: 'good'
-                }                
             }
         }
         stage('OWASP DependencyCheck') {
@@ -119,12 +93,11 @@ pipeline {
             steps {
                 sh """
                     docker image push siddhaant/springpetclinic:dev-${BUILD_NUMBER}
-                    docker image rm -f siddhaant/springpetclinic:dev-${BUILD_NUMBER}
+                    docker image rm -f siddhaant/springpetclinic:dev-${BUILD_NUMBER} 
                    """
             }
         }
     }
-
     post {
         always {
             emailext attachLog: true,            
@@ -136,9 +109,6 @@ pipeline {
                 attachmentsPattern: 'trivy-report.txt'
         }
         failure { 
-            slackSend channel: "#dcl-jenkins-jobs-notification",
-                        message: "${currentBuild.result} - ${JOB_NAME} ${BUILD_NUMBER} (<${BUILD_URL}|Open>)",
-                        color: 'danger'
             emailext attachLog: true,
                 subject: "'${currentBuild.result}'",
                 body: "Project: ${env.JOB_NAME}<br/>" +

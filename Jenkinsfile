@@ -1,7 +1,6 @@
 pipeline {
     agent { label 'MAVEN' }
     options {
-        // skipDefaultCheckout()
         timestamps()
         timeout(time: 1, unit: 'HOURS')
         buildDiscarder(logRotator(numToKeepStr: '5'))
@@ -60,6 +59,7 @@ pipeline {
                 }
             }
         }
+        
         stage('OWASP DependencyCheck') {
             steps {
                 dependencyCheck odcInstallation: 'OWASP_DEPENDENCY_CHECK',
@@ -72,6 +72,7 @@ pipeline {
                 dependencyCheckPublisher pattern: 'dependency-check-report.xml'
             }
         }
+
         stage('Docker Image Build') { 
             agent { label 'DOCKER'}
             steps {
@@ -79,6 +80,7 @@ pipeline {
                 sh "docker image build -t siddhaant/springpetclinic:dev-${BUILD_NUMBER} ."
             }
         }
+
         stage('Trivy: Scan DockerImage') {
             agent { label 'DOCKER'}
             steps { 
@@ -88,6 +90,7 @@ pipeline {
                 publishHTML([reportName: 'Trivy Vulnerability Report', reportDir: '.', reportFiles: 'trivy-report.txt', keepAll: true, alwaysLinkToLastBuild: true, allowMissing: false])
             }
         }
+
         stage('Publish Docker Image') {
             agent { label 'DOCKER'}
             steps {
@@ -98,6 +101,7 @@ pipeline {
             }
         }
     }
+
     post {
         failure { 
             emailext attachLog: true,

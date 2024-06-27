@@ -44,6 +44,13 @@ pipeline {
                 success {
                     archiveArtifacts artifacts: '**/spring-petclinic-*.jar'
                 }
+                failure {
+                    mail subject: "'${currentBuild.result}'",
+                         body: "Project: ${env.JOB_NAME}<br/>" +
+                               "Build Number: ${env.BUILD_NUMBER}<br/>" +
+                               "URL: ${env.BUILD_URL}<br/>",
+                         to: 'siddhant.kadu@featurexcloud.com'  
+                }
             }
         }
 
@@ -109,12 +116,11 @@ pipeline {
 
     post {
         failure { 
-            emailext attachLog: true,
-                subject: "'${currentBuild.result}'",
-                body: "Project: ${env.JOB_NAME}<br/>" +
-                    "Build Number: ${env.BUILD_NUMBER}<br/>" +
-                    "URL: ${env.BUILD_URL}<br/>",
-                to: 'siddhant.kadu@featurexcloud.com'                 
+            mail subject: "'${currentBuild.result}'",
+                 body: "Project: ${env.JOB_NAME}<br/>" +
+                       "Build Number: ${env.BUILD_NUMBER}<br/>" +
+                       "URL: ${env.BUILD_URL}<br/>",
+                 to: 'siddhant.kadu@featurexcloud.com'                 
         }
     }          
 }

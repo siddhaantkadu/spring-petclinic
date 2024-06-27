@@ -74,7 +74,6 @@ pipeline {
         }
 
         stage('Docker Image Build') { 
-            agent { label 'DOCKER'}
             steps {
                 unstash name: 'SpringPetClinic'
                 sh "docker image build -t siddhaant/springpetclinic:dev-${BUILD_NUMBER} ."
@@ -82,7 +81,6 @@ pipeline {
         }
 
         stage('Trivy: Scan DockerImage') {
-            agent { label 'DOCKER'}
             steps { 
                 script {
                     sh "trivy image --format table -o trivy-report.txt siddhaant/springpetclinic:dev-${BUILD_NUMBER}"
@@ -92,7 +90,6 @@ pipeline {
         }
 
         stage('Publish Docker Image') {
-            agent { label 'DOCKER'}
             steps {
                 sh """
                     docker image push siddhaant/springpetclinic:dev-${BUILD_NUMBER}

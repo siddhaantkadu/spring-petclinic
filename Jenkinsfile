@@ -42,7 +42,7 @@ pipeline {
                 }
             post {
                 success {
-                    archiveArtifacts artifacts: '**/spring-petclinic-*.jar',
+                    archiveArtifacts artifacts: '**/spring-petclinic-*.jar'
                     mail subject: "'${currentBuild.result}'",
                          body: "Project: ${env.JOB_NAME}<br/>" +
                                "Build Number: ${env.BUILD_NUMBER}<br/>" +

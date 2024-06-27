@@ -42,9 +42,7 @@ pipeline {
                 }
             post {
                 success {
-                    archiveArtifacts artifacts: '**/spring-petclinic-*.jar'
-                }
-                failure {
+                    archiveArtifacts artifacts: '**/spring-petclinic-*.jar',
                     mail subject: "'${currentBuild.result}'",
                          body: "Project: ${env.JOB_NAME}<br/>" +
                                "Build Number: ${env.BUILD_NUMBER}<br/>" +
@@ -88,12 +86,12 @@ pipeline {
             }
         }
 
-    //     stage('Docker Image Build') { 
-    //         steps {
-    //             unstash name: 'SpringPetClinic'
-    //             sh "docker image build -t siddhaant/springpetclinic:dev-${BUILD_NUMBER} ."
-    //         }
-    //     }
+        stage('Docker Image Build') { 
+            steps {
+                unstash name: 'SpringPetClinic'
+                sh "docker image build -t siddhaant/springpetclinic:dev-${BUILD_NUMBER} ."
+            }
+        }
 
     //     stage('Trivy: Scan DockerImage') {
     //         steps { 

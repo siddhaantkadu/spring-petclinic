@@ -49,7 +49,7 @@ pipeline {
 
         stage('Static Code Analysis') {
             steps {
-                withSonarQubeEnv(installationName: 'SONAR_CLOUD', credentialsId: 'SONAR_TOKEN') {
+                withSonarQubeEnv(installationName: 'SONAR_SCANNER', credentialsId: 'SONAR_TOKEN') {
                     sh  """
                         mvn clean verify sonar:sonar \
                             -Dsonar.host.url=https://sonarcloud.io \
@@ -59,7 +59,15 @@ pipeline {
                 }
             }
         }
-        
+
+        stage('Quality Gate') {
+            steps {
+              timeout(time: 1, unit: 'HOURS') {
+                waitForQualityGate abortPipeline: true
+              }
+            }
+        }
+
         stage('OWASP DependencyCheck') {
             steps {
                 dependencyCheck odcInstallation: 'OWASP_DEPENDENCY_CHECK',
@@ -106,7 +114,7 @@ pipeline {
                 body: "Project: ${env.JOB_NAME}<br/>" +
                     "Build Number: ${env.BUILD_NUMBER}<br/>" +
                     "URL: ${env.BUILD_URL}<br/>",
-                to: 'devops.cloud.dcl@gmail.com'                 
+                to: 'siddhant.kadu@featurexcloud.com'                 
         }
     }          
 }

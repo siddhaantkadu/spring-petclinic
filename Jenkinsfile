@@ -60,44 +60,44 @@ pipeline {
             }
         }
         
-        stage('OWASP DependencyCheck') {
-            steps {
-                dependencyCheck odcInstallation: 'OWASP_DEPENDENCY_CHECK',
-                                additionalArguments: '''
-                                                    -o "./" 
-                                                    -s "./"
-                                                    -f "ALL" 
-                                                    --prettyPrint    
-                                                    '''
-                dependencyCheckPublisher pattern: 'dependency-check-report.xml'
-            }
-        }
+    //     stage('OWASP DependencyCheck') {
+    //         steps {
+    //             dependencyCheck odcInstallation: 'OWASP_DEPENDENCY_CHECK',
+    //                             additionalArguments: '''
+    //                                                 -o "./" 
+    //                                                 -s "./"
+    //                                                 -f "ALL" 
+    //                                                 --prettyPrint    
+    //                                                 '''
+    //             dependencyCheckPublisher pattern: 'dependency-check-report.xml'
+    //         }
+    //     }
 
-        stage('Docker Image Build') { 
-            steps {
-                unstash name: 'SpringPetClinic'
-                sh "docker image build -t siddhaant/springpetclinic:dev-${BUILD_NUMBER} ."
-            }
-        }
+    //     stage('Docker Image Build') { 
+    //         steps {
+    //             unstash name: 'SpringPetClinic'
+    //             sh "docker image build -t siddhaant/springpetclinic:dev-${BUILD_NUMBER} ."
+    //         }
+    //     }
 
-        stage('Trivy: Scan DockerImage') {
-            steps { 
-                script {
-                    sh "trivy image --format table -o trivy-report.txt siddhaant/springpetclinic:dev-${BUILD_NUMBER}"
-                }
-                publishHTML([reportName: 'Trivy Vulnerability Report', reportDir: '.', reportFiles: 'trivy-report.txt', keepAll: true, alwaysLinkToLastBuild: true, allowMissing: false])
-            }
-        }
+    //     stage('Trivy: Scan DockerImage') {
+    //         steps { 
+    //             script {
+    //                 sh "trivy image --format table -o trivy-report.txt siddhaant/springpetclinic:dev-${BUILD_NUMBER}"
+    //             }
+    //             publishHTML([reportName: 'Trivy Vulnerability Report', reportDir: '.', reportFiles: 'trivy-report.txt', keepAll: true, alwaysLinkToLastBuild: true, allowMissing: false])
+    //         }
+    //     }
 
-        stage('Publish Docker Image') {
-            steps {
-                sh """
-                    docker image push siddhaant/springpetclinic:dev-${BUILD_NUMBER}
-                    docker image rm -f siddhaant/springpetclinic:dev-${BUILD_NUMBER} 
-                   """
-            }
-        }
-    }
+    //     stage('Publish Docker Image') {
+    //         steps {
+    //             sh """
+    //                 docker image push siddhaant/springpetclinic:dev-${BUILD_NUMBER}
+    //                 docker image rm -f siddhaant/springpetclinic:dev-${BUILD_NUMBER} 
+    //                """
+    //         }
+    //     }
+    // }
 
     post {
         failure { 

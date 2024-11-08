@@ -9,6 +9,7 @@ pipeline {
         GIT_REPO = 'https://github.com/siddhaantkadu/spring-petclinic.git'
         GIT_BRANCH = 'dev'
         GIT_CRED = 'github-access-token'
+        PATH = "${env.PATH}:/apps/opt/application/owasp/dependency-check/bin"
     }
     stages {
 

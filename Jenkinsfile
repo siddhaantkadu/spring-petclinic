@@ -57,7 +57,7 @@ pipeline {
 
         stage('Static Code Analysis') {
             steps {
-                withSonarQubeEnvwithSonarQubeEnv(installationName: 'SONARQUBE_CLOUD', credentialsId: 'SONAR_CLOUD_TOKEN') {
+                withSonarQubeEnv(installationName: 'SONARQUBE_CLOUD', credentialsId: 'SONAR_CLOUD_TOKEN') {
                     sh  """
                         mvn clean verify sonar:sonar \
                             -Dsonar.host.url=https://sonarcloud.io \

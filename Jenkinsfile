@@ -5,8 +5,10 @@ pipeline {
         timeout(time: 1, unit: 'HOURS')
         buildDiscarder(logRotator(numToKeepStr: '5'))
     }
-    triggers {
-       pollSCM('* * * * *') 
+    environment { 
+        GIT_REPO = 'https://github.com/siddhaantkadu/spring-petclinic.git'
+        GIT_BRANCH = 'dev'
+        GIT_CRED = 'github-access-token'
     }
     stages {
 
@@ -18,8 +20,9 @@ pipeline {
 
         stage('Checkout SCM') {
             steps {
-                git url: 'https://github.com/siddhaantkadu/spring-petclinic.git',
-                    branch: 'dev'
+                git credentialsId: "${env.GIT_CRED}",
+                    url: "${env.GIT_REPO}",
+                    branch: "${env.GIT_BRANCH}"
             }
         }
 
@@ -47,19 +50,19 @@ pipeline {
                          body: "Project: ${env.JOB_NAME}<br/>" +
                                "Build Number: ${env.BUILD_NUMBER}<br/>" +
                                "URL: ${env.BUILD_URL}<br/>",
-                         to: 'siddhant.kadu@featurexcloud.com'  
+                         to: 'siddhant.kadu@beekeeper.com'  
                 }
             }
         }
 
         stage('Static Code Analysis') {
             steps {
-                withSonarQubeEnv(installationName: 'SONAR_CLOUD', credentialsId: 'SONAR_TOKEN') {
+                withSonarQubeEnvwithSonarQubeEnv(installationName: 'SONARQUBE_CLOUD', credentialsId: 'SONAR_CLOUD_TOKEN') {
                     sh  """
                         mvn clean verify sonar:sonar \
                             -Dsonar.host.url=https://sonarcloud.io \
-                            -Dsonar.organization=jenkins-spring-petclinic \
-                            -Dsonar.projectKey=jenkins-spring-petclinic_spring-petclinic
+                            -Dsonar.organization=the-beekeeper-devops \
+                            -Dsonar.projectKey=the-beekeeper-devops_spring-petclinic
                         """
                 }
             }
@@ -67,7 +70,7 @@ pipeline {
 
         stage('Quality Gate') {
             steps {
-              timeout(time: 1, unit: 'HOURS') {
+              timeout(time: 5, unit: 'MINUTES') {
                 waitForQualityGate abortPipeline: true
               }
             }
@@ -86,30 +89,30 @@ pipeline {
             }
         }
 
-        stage('Docker Image Build') { 
-            steps {
-                unstash name: 'SpringPetClinic'
-                sh "docker image build -t siddhaant/springpetclinic:dev-${BUILD_NUMBER} ."
-            }
-        }
+        // stage('Docker Image Build') { 
+        //     steps {
+        //         unstash name: 'SpringPetClinic'
+        //         sh "docker image build -t siddhaant/springpetclinic:dev-${BUILD_NUMBER} ."
+        //     }
+        // }
 
-        stage('Trivy: Scan DockerImage') {
-            steps { 
-                script {
-                    sh "trivy image --format table -o trivy-report.txt siddhaant/springpetclinic:dev-${BUILD_NUMBER}"
-                }
-                publishHTML([reportName: 'Trivy Vulnerability Report', reportDir: '.', reportFiles: 'trivy-report.txt', keepAll: true, alwaysLinkToLastBuild: true, allowMissing: false])
-            }
-        }
+        // stage('Trivy: Scan DockerImage') {
+        //     steps { 
+        //         script {
+        //             sh "trivy image --format table -o trivy-report.txt siddhaant/springpetclinic:dev-${BUILD_NUMBER}"
+        //         }
+        //         publishHTML([reportName: 'Trivy Vulnerability Report', reportDir: '.', reportFiles: 'trivy-report.txt', keepAll: true, alwaysLinkToLastBuild: true, allowMissing: false])
+        //     }
+        // }
 
-        stage('Publish Docker Image') {
-            steps {
-                sh """
-                    docker image push siddhaant/springpetclinic:dev-${BUILD_NUMBER}
-                    docker image rm -f siddhaant/springpetclinic:dev-${BUILD_NUMBER} 
-                   """
-            }
-        }
+        // stage('Publish Docker Image') {
+        //     steps {
+        //         sh """
+        //             docker image push siddhaant/springpetclinic:dev-${BUILD_NUMBER}
+        //             docker image rm -f siddhaant/springpetclinic:dev-${BUILD_NUMBER} 
+        //            """
+        //     }
+        // }
     }
 
     post {
@@ -118,7 +121,7 @@ pipeline {
                  body: "Project: ${env.JOB_NAME}<br/>" +
                        "Build Number: ${env.BUILD_NUMBER}<br/>" +
                        "URL: ${env.BUILD_URL}<br/>",
-                 to: 'siddhant.kadu@featurexcloud.com'                 
+                 to: 'siddhant.kadu@beekeeper.com'                 
         }
     }          
 }

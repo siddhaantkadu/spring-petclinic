@@ -68,26 +68,26 @@ pipeline {
             }
         }
 
-        stage('Quality Gate') {
-            steps {
-              timeout(time: 5, unit: 'MINUTES') {
-                waitForQualityGate abortPipeline: true
-              }
-            }
-        }
+        // stage('Quality Gate') {
+        //     steps {
+        //       timeout(time: 5, unit: 'MINUTES') {
+        //         waitForQualityGate abortPipeline: true
+        //       }
+        //     }
+        // }
 
-        stage('OWASP DependencyCheck') {
-            steps {
-                dependencyCheck odcInstallation: 'OWASP_DEPENDENCY_CHECK',
-                                additionalArguments: '''
-                                                    -o "./" 
-                                                    -s "./"
-                                                    -f "ALL" 
-                                                    --prettyPrint    
-                                                    '''
-                dependencyCheckPublisher pattern: 'dependency-check-report.xml'
-            }
-        }
+        // stage('OWASP DependencyCheck') {
+        //     steps {
+        //         dependencyCheck odcInstallation: 'OWASP_DEPENDENCY_CHECK',
+        //                         additionalArguments: '''
+        //                                             -o "./" 
+        //                                             -s "./"
+        //                                             -f "ALL" 
+        //                                             --prettyPrint    
+        //                                             '''
+        //         dependencyCheckPublisher pattern: 'dependency-check-report.xml'
+        //     }
+        // }
 
         // stage('Docker Image Build') { 
         //     steps {

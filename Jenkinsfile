@@ -38,44 +38,26 @@ pipeline {
             }
         }
 
-        stage('Build Package') {
-            steps {
-                sh 'mvn clean package'
-                stash name: 'SpringPetClinic',
-                      includes: '**/spring-petclinic-*.jar'
-                }
-            post {
-                success {
-                    archiveArtifacts artifacts: '**/spring-petclinic-*.jar'
-                    mail subject: "'${currentBuild.result}'",
-                         body: "Project: ${env.JOB_NAME}<br/>" +
-                               "Build Number: ${env.BUILD_NUMBER}<br/>" +
-                               "URL: ${env.BUILD_URL}<br/>",
-                         to: 'siddhant.kadu@beekeeper.com'  
-                }
-            }
-        }
-
         stage('Static Code Analysis') {
             steps {
                 withSonarQubeEnv(installationName: 'SONARQUBE_CLOUD', credentialsId: 'SONAR_CLOUD_TOKEN') {
                     sh  """
                         mvn clean verify sonar:sonar \
                             -Dsonar.host.url=https://sonarcloud.io \
-                            -Dsonar.organization=the-beekeeper-devops \
-                            -Dsonar.projectKey=the-beekeeper-devops_spring-petclinic
+                            -Dsonar.organization=the-beekeeper-sre \
+                            -Dsonar.projectKey=the-beekeeper-sre-2332_beekeeper-sre
                         """
                 }
             }
         }
 
-        stage('Quality Gate') {
-            steps {
-              timeout(time: 5, unit: 'MINUTES') {
-                waitForQualityGate abortPipeline: true
-              }
-            }
-        }
+        // stage('Quality Gate') {
+        //     steps {
+        //       timeout(time: 5, unit: 'MINUTES') {
+        //         waitForQualityGate abortPipeline: true
+        //       }
+        //     }
+        // }
 
         stage('OWASP DependencyCheck') {
             steps {
@@ -90,39 +72,38 @@ pipeline {
             }
         }
 
-        // stage('Docker Image Build') { 
-        //     steps {
-        //         unstash name: 'SpringPetClinic'
-        //         sh "docker image build -t siddhaant/springpetclinic:dev-${BUILD_NUMBER} ."
-        //     }
-        // }
-
-        // stage('Trivy: Scan DockerImage') {
-        //     steps { 
-        //         script {
-        //             sh "trivy image --format table -o trivy-report.txt siddhaant/springpetclinic:dev-${BUILD_NUMBER}"
-        //         }
-        //         publishHTML([reportName: 'Trivy Vulnerability Report', reportDir: '.', reportFiles: 'trivy-report.txt', keepAll: true, alwaysLinkToLastBuild: true, allowMissing: false])
-        //     }
-        // }
-
-        // stage('Publish Docker Image') {
-        //     steps {
-        //         sh """
-        //             docker image push siddhaant/springpetclinic:dev-${BUILD_NUMBER}
-        //             docker image rm -f siddhaant/springpetclinic:dev-${BUILD_NUMBER} 
-        //            """
-        //     }
-        // }
-    }
-
-    post {
-        failure { 
-            mail subject: "'${currentBuild.result}'",
-                 body: "Project: ${env.JOB_NAME}<br/>" +
-                       "Build Number: ${env.BUILD_NUMBER}<br/>" +
-                       "URL: ${env.BUILD_URL}<br/>",
-                 to: 'siddhant.kadu@beekeeper.com'                 
+        stage('Build Docker Image') { 
+            steps {
+                sh "docker image build -t springpetclinic:dev-${BUILD_NUMBER} ."
+            }
         }
-    }          
+
+        stage('Trivy: Scan DockerImage') {
+            steps { 
+                script {
+                    sh "trivy image --format table -o trivy-report.txt siddhaant/springpetclinic:dev-${BUILD_NUMBER}"
+                }
+                publishHTML([reportName: 'Trivy Vulnerability Report', reportDir: '.', reportFiles: 'trivy-report.txt', keepAll: true, alwaysLinkToLastBuild: true, allowMissing: false])
+            }
+        }
+
+    //     stage('Publish Docker Image') {
+    //         steps {
+    //             sh """
+    //                 docker image push siddhaant/springpetclinic:dev-${BUILD_NUMBER}
+    //                 docker image rm -f siddhaant/springpetclinic:dev-${BUILD_NUMBER} 
+    //                """
+    //         }
+    //     }
+    // }
+
+    // post {
+    //     failure { 
+    //         mail subject: "'${currentBuild.result}'",
+    //              body: "Project: ${env.JOB_NAME}<br/>" +
+    //                    "Build Number: ${env.BUILD_NUMBER}<br/>" +
+    //                    "URL: ${env.BUILD_URL}<br/>",
+    //              to: 'siddhant.kadu@beekeeper.com'                 
+    //     }
+    // }          
 }

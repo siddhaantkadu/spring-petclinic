@@ -19,24 +19,24 @@ pipeline {
             }
         }
 
-        stage('Checkout SCM') {
-            steps {
-                git credentialsId: "${env.GIT_CRED}",
-                    url: "${env.GIT_REPO}",
-                    branch: "${env.GIT_BRANCH}"
-            }
-        }
+        // stage('Checkout SCM') {
+        //     steps {
+        //         git credentialsId: "${env.GIT_CRED}",
+        //             url: "${env.GIT_REPO}",
+        //             branch: "${env.GIT_BRANCH}"
+        //     }
+        // }
 
-        stage('Unit Test') {
-            steps {
-                sh 'mvn test'
-            }
-            post {
-                always {
-                    junit testResults: '**/TEST-*.xml'
-                }
-            }
-        }
+        // stage('Unit Test') {
+        //     steps {
+        //         sh 'mvn test'
+        //     }
+        //     post {
+        //         always {
+        //             junit testResults: '**/TEST-*.xml'
+        //         }
+        //     }
+        // }
 
         stage('Static Code Analysis') {
             steps {

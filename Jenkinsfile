@@ -87,23 +87,13 @@ pipeline {
             }
         }
 
-    //     stage('Publish Docker Image') {
-    //         steps {
-    //             sh """
-    //                 docker image push siddhaant/springpetclinic:dev-${BUILD_NUMBER}
-    //                 docker image rm -f siddhaant/springpetclinic:dev-${BUILD_NUMBER} 
-    //                """
-    //         }
-    //     }
-    // }
-
-    // post {
-    //     failure { 
-    //         mail subject: "'${currentBuild.result}'",
-    //              body: "Project: ${env.JOB_NAME}<br/>" +
-    //                    "Build Number: ${env.BUILD_NUMBER}<br/>" +
-    //                    "URL: ${env.BUILD_URL}<br/>",
-    //              to: 'siddhant.kadu@beekeeper.com'                 
-    //     }
-    // }          
+        stage('Publish Docker Image') {
+            steps {
+                sh """
+                    docker image push siddhaant/springpetclinic:dev-${BUILD_NUMBER}
+                    docker image rm -f siddhaant/springpetclinic:dev-${BUILD_NUMBER} 
+                   """
+            }
+        }
+    }         
 }

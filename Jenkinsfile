@@ -27,25 +27,25 @@ pipeline {
             }
         }
 
-        stage('Unit Test') {
-            steps {
-                sh 'mvn test'
-            }
-            post {
-                always {
-                    junit testResults: '**/TEST-*.xml'
-                }
-            }
-        }
+        // stage('Unit Test') {
+        //     steps {
+        //         sh 'mvn test'
+        //     }
+        //     post {
+        //         always {
+        //             junit testResults: '**/TEST-*.xml'
+        //         }
+        //     }
+        // }
 
         stage('Static Code Analysis') {
             steps {
-                withSonarQubeEnv(installationName: 'SONARQUBE_CLOUD', credentialsId: 'SONAR_CLOUD_TOKEN') {
+                withSonarQubeEnv(installationName: 'SONARQUBE_CLOUD', credentialsId: 'SONAR_TOKEN') {
                     sh  """
                         mvn clean verify sonar:sonar \
                             -Dsonar.host.url=https://sonarcloud.io \
                             -Dsonar.organization=the-beekeeper-sre \
-                            -Dsonar.projectKey=the-beekeeper-sre-2332_beekeeper-sre
+                            -Dsonar.projectKey=the-beekeeper-sre_spring-petclinic
                         """
                 }
             }

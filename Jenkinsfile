@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'MAVEN' }
+    agent { label 'JENKINS_AGENT_01' }
     options {
         timestamps()
         timeout(time: 1, unit: 'HOURS')

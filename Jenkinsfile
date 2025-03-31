@@ -81,7 +81,7 @@ pipeline {
         stage('Trivy: Scan DockerImage') {
             steps { 
                 script {
-                    sh "trivy image --format table -o trivy-report.txt siddhaant/springpetclinic:dev-${BUILD_NUMBER}"
+                    sh "trivy image --format table -o trivy-report.txt springpetclinic:dev-${BUILD_NUMBER}"
                 }
                 publishHTML([reportName: 'Trivy Vulnerability Report', reportDir: '.', reportFiles: 'trivy-report.txt', keepAll: true, alwaysLinkToLastBuild: true, allowMissing: false])
             }

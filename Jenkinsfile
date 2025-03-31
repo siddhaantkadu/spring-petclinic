@@ -27,29 +27,29 @@ pipeline {
         //     }
         // }
 
-        // stage('Unit Test') {
-        //     steps {
-        //         sh 'mvn test'
-        //     }
-        //     post {
-        //         always {
-        //             junit testResults: '**/TEST-*.xml'
-        //         }
-        //     }
-        // }
-
-        stage('Static Code Analysis') {
+        stage('Unit Test') {
             steps {
-                withSonarQubeEnv(installationName: 'SONARQUBE_CLOUD', credentialsId: 'SONAR_CLOUD_TOKEN') {
-                    sh  """
-                        mvn clean verify sonar:sonar \
-                            -Dsonar.host.url=https://sonarcloud.io \
-                            -Dsonar.organization=the-beekeeper-sre \
-                            -Dsonar.projectKey=the-beekeeper-sre-2332_beekeeper-sre
-                        """
+                sh 'mvn test'
+            }
+            post {
+                always {
+                    junit testResults: '**/TEST-*.xml'
                 }
             }
         }
+
+        // stage('Static Code Analysis') {
+        //     steps {
+        //         withSonarQubeEnv(installationName: 'SONARQUBE_CLOUD', credentialsId: 'SONAR_CLOUD_TOKEN') {
+        //             sh  """
+        //                 mvn clean verify sonar:sonar \
+        //                     -Dsonar.host.url=https://sonarcloud.io \
+        //                     -Dsonar.organization=the-beekeeper-sre \
+        //                     -Dsonar.projectKey=the-beekeeper-sre-2332_beekeeper-sre
+        //                 """
+        //         }
+        //     }
+        // }
 
         // stage('Quality Gate') {
         //     steps {

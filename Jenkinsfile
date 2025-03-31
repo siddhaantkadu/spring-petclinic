@@ -27,16 +27,16 @@ pipeline {
             }
         }
 
-        // stage('Unit Test') {
-        //     steps {
-        //         sh 'mvn test'
-        //     }
-        //     post {
-        //         always {
-        //             junit testResults: '**/TEST-*.xml'
-        //         }
-        //     }
-        // }
+        stage('Unit Test') {
+            steps {
+                sh 'mvn test'
+            }
+            post {
+                always {
+                    junit testResults: '**/TEST-*.xml'
+                }
+            }
+        }
 
         stage('Static Code Analysis') {
             steps {
@@ -50,14 +50,6 @@ pipeline {
                 }
             }
         }
-
-        // stage('Quality Gate') {
-        //     steps {
-        //       timeout(time: 5, unit: 'MINUTES') {
-        //         waitForQualityGate abortPipeline: true
-        //       }
-        //     }
-        // }
 
         stage('OWASP DependencyCheck') {
             steps {
@@ -87,13 +79,13 @@ pipeline {
             }
         }
 
-        stage('Publish Docker Image') {
-            steps {
-                sh """
-                    docker image push siddhaant/springpetclinic:dev-${BUILD_NUMBER}
-                    docker image rm -f siddhaant/springpetclinic:dev-${BUILD_NUMBER} 
-                   """
-            }
-        }
+        // stage('Publish Docker Image') {
+        //     steps {
+        //         sh """
+        //             docker image push siddhaant/springpetclinic:dev-${BUILD_NUMBER}
+        //             docker image rm -f siddhaant/springpetclinic:dev-${BUILD_NUMBER} 
+        //            """
+        //     }
+        // }
     }         
 }

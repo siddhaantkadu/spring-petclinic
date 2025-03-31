@@ -19,13 +19,13 @@ pipeline {
             }
         }
 
-        // stage('Checkout SCM') {
-        //     steps {
-        //         git credentialsId: "${env.GIT_CRED}",
-        //             url: "${env.GIT_REPO}",
-        //             branch: "${env.GIT_BRANCH}"
-        //     }
-        // }
+        stage('Checkout SCM') {
+            steps {
+                git credentialsId: "${env.GIT_CRED}",
+                    url: "${env.GIT_REPO}",
+                    branch: "${env.GIT_BRANCH}"
+            }
+        }
 
         stage('Unit Test') {
             steps {
@@ -38,18 +38,18 @@ pipeline {
             }
         }
 
-        // stage('Static Code Analysis') {
-        //     steps {
-        //         withSonarQubeEnv(installationName: 'SONARQUBE_CLOUD', credentialsId: 'SONAR_CLOUD_TOKEN') {
-        //             sh  """
-        //                 mvn clean verify sonar:sonar \
-        //                     -Dsonar.host.url=https://sonarcloud.io \
-        //                     -Dsonar.organization=the-beekeeper-sre \
-        //                     -Dsonar.projectKey=the-beekeeper-sre-2332_beekeeper-sre
-        //                 """
-        //         }
-        //     }
-        // }
+        stage('Static Code Analysis') {
+            steps {
+                withSonarQubeEnv(installationName: 'SONARQUBE_CLOUD', credentialsId: 'SONAR_CLOUD_TOKEN') {
+                    sh  """
+                        mvn clean verify sonar:sonar \
+                            -Dsonar.host.url=https://sonarcloud.io \
+                            -Dsonar.organization=the-beekeeper-sre \
+                            -Dsonar.projectKey=the-beekeeper-sre-2332_beekeeper-sre
+                        """
+                }
+            }
+        }
 
         // stage('Quality Gate') {
         //     steps {

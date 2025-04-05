@@ -57,7 +57,6 @@ pipeline {
                             mvn clean verify sonar:sonar \
                             -Dsonar.projectKey=the-beekeeper \
                             -Dsonar.projectName='the-beekeeper' \
-                             -Dsonar.host.url=http://10.128.0.6:9000 \
                         """
                 }
             }

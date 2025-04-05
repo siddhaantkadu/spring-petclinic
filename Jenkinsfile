@@ -41,11 +41,18 @@ pipeline {
             steps {
                 withSonarQubeEnv(installationName: 'SONARQUBE_CLOUD', credentialsId: 'SONAR_TOKEN') {
                     sh  """
-                        mvn clean verify sonar:sonar \
-                            -Dsonar.host.url=https://sonarcloud.io \
-                            -Dsonar.organization=the-beekeeper-sre \
-                            -Dsonar.projectKey=the-beekeeper-sre_spring-petclinic
+                            mvn clean verify sonar:sonar \
+                            -Dsonar.projectKey=the-beekeeper \
+                            -Dsonar.projectName='the-beekeeper' \
+                            -Dsonar.host.url=http://10.128.0.6:9000 \
                         """
+                }
+            }
+        }
+        stage("Quality Gate") {
+            steps {
+                timeout(time: 1, unit: 'HOURS') {
+                    waitForQualityGate abortPipeline: true
                 }
             }
         }

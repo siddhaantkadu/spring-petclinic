@@ -26,14 +26,26 @@ pipeline {
             }
         }
 
-        stage('Unit Test') {
+        // stage('Unit Test') {
+        //     steps {
+        //         sh 'mvn test'
+        //     }
+        //     post {
+        //         always {
+        //             junit testResults: '**/TEST-*.xml'
+        //             // junit allowEmptyResults: true, testResults: '**/TEST-*.xml'
+        //         }
+        //     }
+        // }
+
+        stage('Build Package') {
             steps {
-                sh 'mvn test'
-            }
+                sh 'mvn clean package'
+                }
             post {
-                always {
-                    junit testResults: '**/TEST-*.xml'
-                    // junit allowEmptyResults: true, testResults: '**/TEST-*.xml'
+                success {
+                    archiveArtifacts artifacts: '**/spring-petclinic-*.jar'
+
                 }
             }
         }

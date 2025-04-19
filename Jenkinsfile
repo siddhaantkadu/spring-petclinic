@@ -55,8 +55,8 @@ pipeline {
                 withSonarQubeEnv(installationName: 'SONARQUBE_CLOUD', credentialsId: 'SONAR_TOKEN') {
                     sh  """
                             mvn clean verify sonar:sonar \
-                            -Dsonar.projectKey=the-beekeeper \
-                            -Dsonar.projectName='the-beekeeper' \
+                            -Dsonar.projectKey=spring-petclinic \
+                            -Dsonar.projectName='spring-petclinic' \
                         """
                 }
             }
